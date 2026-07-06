@@ -109,9 +109,9 @@ php artisan serve
 Os seeders criam usuarios para validacao local:
 
 ```text
-Administrador: admin@itapevi.sp.leg.br / password
-Professor:     professor@itapevi.sp.leg.br / password
-Aluno:         aluno@itapevi.sp.leg.br / password
+Administrador: admin / password
+Professor:     professor / password
+Aluno:         aluno / password
 ```
 
 > Em producao, troque as senhas imediatamente apos a primeira publicacao.
