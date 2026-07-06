@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="170" viewBox="0 0 520 170" role="img" aria-labelledby="title desc">
+  <title id="title">Escola do Parlamento de Itapevi</title>
+  <desc id="desc">Marca institucional em verde e dourado com brasao estilizado e livro aberto.</desc>
+  <defs>
+    <linearGradient id="green" x1="0" x2="1">
+      <stop offset="0" stop-color="#0a6b21"/>
+      <stop offset="1" stop-color="#0f8a2f"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1">
+      <stop offset="0" stop-color="#f1c84b"/>
+      <stop offset="1" stop-color="#d6a51d"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <g transform="translate(18 18)">
+      <path d="M56 0 91 15l15 35c7 43-13 71-50 84C19 121-1 93 6 50L21 15 56 0Z" fill="#fff" stroke="#0b5f22" stroke-width="5"/>
+      <path d="M23 53c25-12 46-12 66 0v45c-20-11-42-11-66 0V53Z" fill="#f8fbf7" stroke="#0b5f22" stroke-width="4"/>
+      <path d="M56 49v53" stroke="#0b5f22" stroke-width="4"/>
+      <path d="M32 64c12-5 20-5 24 0M32 78c12-5 20-5 24 0M80 64c-12-5-20-5-24 0M80 78c-12-5-20-5-24 0" stroke="#739b35" stroke-width="3" stroke-linecap="round"/>
+      <path d="M29 18h54l-7 16H36l-7-16Z" fill="url(#gold)" stroke="#0b5f22" stroke-width="3"/>
+      <path d="M17 112c26 21 52 21 78 0" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(142 47)">
+      <text x="0" y="34" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#087126">ESCOLA DO</text>
+      <text x="0" y="69" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#087126">PARLAMENTO</text>
+      <path d="M0 86c82 12 174 10 278-8 20-3 39-7 58-12" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M0 94c84 8 177 5 282-12 19-3 37-7 54-11" stroke="#0b5f22" stroke-width="3" stroke-linecap="round"/>
+      <text x="4" y="121" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#53715b">CAMARA MUNICIPAL DE ITAPEVI</text>
+    </g>
+  </g>
+</svg>

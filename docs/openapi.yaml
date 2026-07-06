@@ -1,0 +1,1267 @@
+openapi: 3.0.3
+info:
+  title: API EAD EPI
+  version: 1.0.0
+  description: API REST para consulta, envio e atualizacao de dados da plataforma EAD.
+servers:
+  - url: /api
+    description: Servidor atual
+tags:
+  - name: Publico
+  - name: Autenticacao
+  - name: Cursos
+  - name: Matriculas
+  - name: Aulas
+  - name: Avaliacoes
+  - name: Certificados
+  - name: Comunicacao
+  - name: Forum
+  - name: Sistema
+security:
+  - bearerAuth: []
+paths:
+  /portal:
+    get:
+      tags: [Publico]
+      security: []
+      summary: Dados publicos do portal
+      responses:
+        "200":
+          description: Conteudo publico do portal.
+          content:
+            application/json:
+              schema:
+                type: object
+  /portal/courses:
+    get:
+      tags: [Publico]
+      security: []
+      summary: Lista cursos publicados no portal
+      responses:
+        "200":
+          description: Lista de cursos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+  /portal/courses/{slug}:
+    get:
+      tags: [Publico]
+      security: []
+      summary: Detalha curso publico por slug
+      parameters:
+        - $ref: "#/components/parameters/Slug"
+      responses:
+        "200":
+          description: Curso encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /auth/register:
+    post:
+      tags: [Autenticacao]
+      security: []
+      summary: Cadastra aluno e retorna token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/AuthToken"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/login:
+    post:
+      tags: [Autenticacao]
+      security: []
+      summary: Autentica usuario e retorna token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/AuthToken"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /auth/me:
+    get:
+      tags: [Autenticacao]
+      summary: Retorna usuario autenticado
+      responses:
+        "200":
+          description: Usuario autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /auth/logout:
+    post:
+      tags: [Autenticacao]
+      summary: Revoga token atual
+      responses:
+        "204":
+          description: Logout realizado.
+  /dashboard:
+    get:
+      tags: [Sistema]
+      summary: Indicadores do painel
+      responses:
+        "200":
+          description: Indicadores consolidados.
+          content:
+            application/json:
+              schema:
+                type: object
+  /courses/categories:
+    get:
+      tags: [Cursos]
+      summary: Lista categorias de cursos
+      responses:
+        "200":
+          description: Categorias.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+  /courses:
+    get:
+      tags: [Cursos]
+      summary: Lista cursos
+      parameters:
+        - $ref: "#/components/parameters/Page"
+      responses:
+        "200":
+          description: Cursos paginados.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedCourses"
+    post:
+      tags: [Cursos]
+      summary: Cria curso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseRequest"
+      responses:
+        "200":
+          description: Curso criado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /courses/{id}:
+    get:
+      tags: [Cursos]
+      summary: Detalha curso
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Curso encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Cursos]
+      summary: Atualiza curso
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseRequest"
+      responses:
+        "200":
+          description: Curso atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    patch:
+      tags: [Cursos]
+      summary: Atualiza parcialmente curso
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseRequest"
+      responses:
+        "200":
+          description: Curso atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+    delete:
+      tags: [Cursos]
+      summary: Remove curso
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Curso removido.
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /enrollments:
+    get:
+      tags: [Matriculas]
+      summary: Lista matriculas
+      parameters:
+        - $ref: "#/components/parameters/Page"
+      responses:
+        "200":
+          description: Matriculas paginadas.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEnrollments"
+    post:
+      tags: [Matriculas]
+      summary: Cria matricula
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentRequest"
+      responses:
+        "200":
+          description: Matricula criada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enrollment"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /enrollments/{id}:
+    get:
+      tags: [Matriculas]
+      summary: Detalha matricula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Matricula encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enrollment"
+    put:
+      tags: [Matriculas]
+      summary: Atualiza matricula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentUpdateRequest"
+      responses:
+        "200":
+          description: Matricula atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enrollment"
+    patch:
+      tags: [Matriculas]
+      summary: Atualiza parcialmente matricula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnrollmentUpdateRequest"
+      responses:
+        "200":
+          description: Matricula atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enrollment"
+    delete:
+      tags: [Matriculas]
+      summary: Cancela matricula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Matricula cancelada.
+  /lessons:
+    get:
+      tags: [Aulas]
+      summary: Lista aulas
+      responses:
+        "200":
+          description: Aulas paginadas.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedLessons"
+    post:
+      tags: [Aulas]
+      summary: Cria aula
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LessonRequest"
+      responses:
+        "200":
+          description: Aula criada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lesson"
+  /lessons/{id}:
+    get:
+      tags: [Aulas]
+      summary: Detalha aula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Aula encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lesson"
+    put:
+      tags: [Aulas]
+      summary: Atualiza aula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LessonRequest"
+      responses:
+        "200":
+          description: Aula atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lesson"
+    patch:
+      tags: [Aulas]
+      summary: Atualiza parcialmente aula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LessonRequest"
+      responses:
+        "200":
+          description: Aula atualizada.
+    delete:
+      tags: [Aulas]
+      summary: Remove aula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Aula removida.
+  /lessons/{id}/progress:
+    post:
+      tags: [Aulas]
+      summary: Envia progresso de aula
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LessonProgressRequest"
+      responses:
+        "200":
+          description: Progresso salvo.
+          content:
+            application/json:
+              schema:
+                type: object
+  /exams:
+    get:
+      tags: [Avaliacoes]
+      summary: Lista avaliacoes
+      responses:
+        "200":
+          description: Avaliacoes paginadas.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedExams"
+    post:
+      tags: [Avaliacoes]
+      summary: Cria avaliacao
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamRequest"
+      responses:
+        "200":
+          description: Avaliacao criada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+  /exams/{id}:
+    get:
+      tags: [Avaliacoes]
+      summary: Detalha avaliacao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Avaliacao encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+    put:
+      tags: [Avaliacoes]
+      summary: Atualiza avaliacao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamRequest"
+      responses:
+        "200":
+          description: Avaliacao atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+    patch:
+      tags: [Avaliacoes]
+      summary: Atualiza parcialmente avaliacao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamRequest"
+      responses:
+        "200":
+          description: Avaliacao atualizada.
+    delete:
+      tags: [Avaliacoes]
+      summary: Remove avaliacao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Avaliacao removida.
+  /exams/{id}/submit:
+    post:
+      tags: [Avaliacoes]
+      summary: Envia respostas da avaliacao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamSubmitRequest"
+      responses:
+        "200":
+          description: Tentativa registrada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttempt"
+  /exam-attempts/{id}/grade:
+    post:
+      tags: [Avaliacoes]
+      summary: Corrige tentativa manualmente
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamGradeRequest"
+      responses:
+        "200":
+          description: Tentativa corrigida.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttempt"
+  /certificates:
+    get:
+      tags: [Certificados]
+      summary: Lista certificados
+      responses:
+        "200":
+          description: Certificados paginados.
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      tags: [Certificados]
+      summary: Cria certificado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Certificado criado.
+  /certificates/{id}:
+    get:
+      tags: [Certificados]
+      summary: Detalha certificado
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Certificado encontrado.
+    put:
+      tags: [Certificados]
+      summary: Atualiza certificado
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Certificado atualizado.
+    delete:
+      tags: [Certificados]
+      summary: Remove certificado
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Certificado removido.
+  /certificate/validate/{code}:
+    get:
+      tags: [Certificados]
+      security: []
+      summary: Valida certificado publicamente
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Resultado da validacao.
+  /chats:
+    get:
+      tags: [Comunicacao]
+      summary: Lista conversas
+      responses:
+        "200":
+          description: Conversas paginadas.
+    post:
+      tags: [Comunicacao]
+      summary: Cria conversa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Conversa criada.
+  /chats/{id}/messages:
+    post:
+      tags: [Comunicacao]
+      summary: Envia mensagem no chat
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                attachments:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Mensagem enviada.
+  /forums:
+    get:
+      tags: [Forum]
+      summary: Lista topicos do forum
+      responses:
+        "200":
+          description: Topicos paginados.
+    post:
+      tags: [Forum]
+      summary: Cria topico no forum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Topico criado.
+  /forums/{id}:
+    get:
+      tags: [Forum]
+      summary: Detalha topico do forum
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Topico encontrado.
+    put:
+      tags: [Forum]
+      summary: Atualiza topico do forum
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Topico atualizado.
+    delete:
+      tags: [Forum]
+      summary: Remove topico do forum
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Topico removido.
+  /settings:
+    get:
+      tags: [Sistema]
+      summary: Lista configuracoes
+      responses:
+        "200":
+          description: Configuracoes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Setting"
+    post:
+      tags: [Sistema]
+      summary: Cria ou atualiza configuracao por chave
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingRequest"
+      responses:
+        "200":
+          description: Configuracao salva.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Setting"
+  /settings/{id}:
+    get:
+      tags: [Sistema]
+      summary: Detalha configuracao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Configuracao encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Setting"
+    put:
+      tags: [Sistema]
+      summary: Atualiza configuracao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingUpdateRequest"
+      responses:
+        "200":
+          description: Configuracao atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Setting"
+    patch:
+      tags: [Sistema]
+      summary: Atualiza parcialmente configuracao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingUpdateRequest"
+      responses:
+        "200":
+          description: Configuracao atualizada.
+    delete:
+      tags: [Sistema]
+      summary: Remove configuracao
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Configuracao removida.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    Slug:
+      name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+        example: introducao-seguranca
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+  responses:
+    AuthToken:
+      description: Usuario autenticado com token de acesso.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: "#/components/schemas/User"
+              token:
+                type: string
+                example: "1|token-sanctum"
+    Forbidden:
+      description: Sem permissao para executar a acao.
+    NotFound:
+      description: Registro nao encontrado.
+    ValidationError:
+      description: Erro de validacao.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+    RegisterRequest:
+      type: object
+      required: [name, email, password, lgpd_consent]
+      properties:
+        name:
+          type: string
+          example: Maria Silva
+        email:
+          type: string
+          format: email
+          example: maria@example.com
+        password:
+          type: string
+          minLength: 8
+          example: senha-segura
+        lgpd_consent:
+          type: boolean
+          example: true
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: maria@example.com
+        password:
+          type: string
+          example: senha-segura
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        category_id:
+          type: integer
+        teacher_id:
+          type: integer
+          nullable: true
+        name:
+          type: string
+        slug:
+          type: string
+        short_description:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        workload_hours:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum: [draft, pending_review, changes_requested, published, closed]
+        is_featured:
+          type: boolean
+    CourseRequest:
+      type: object
+      properties:
+        category_id:
+          type: integer
+        teacher_id:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          example: Introducao a Seguranca do Trabalho
+        slug:
+          type: string
+          nullable: true
+        short_description:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        workload_hours:
+          type: integer
+          nullable: true
+        cover_image_path:
+          type: string
+          nullable: true
+        presentation_video_url:
+          type: string
+          nullable: true
+        starts_at:
+          type: string
+          format: date
+          nullable: true
+        ends_at:
+          type: string
+          format: date
+          nullable: true
+        minimum_grade:
+          type: number
+          nullable: true
+        minimum_progress_percent:
+          type: integer
+          nullable: true
+        seat_limit:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum: [draft, pending_review, changes_requested, published, closed]
+          nullable: true
+        is_featured:
+          type: boolean
+          nullable: true
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+        course_id:
+          type: integer
+        user_id:
+          type: integer
+        status:
+          type: string
+          enum: [active, completed, cancelled, waiting]
+        final_grade:
+          type: number
+          nullable: true
+        progress_percent:
+          type: integer
+          nullable: true
+    EnrollmentRequest:
+      type: object
+      required: [course_id]
+      properties:
+        course_id:
+          type: integer
+        user_id:
+          type: integer
+          nullable: true
+        source:
+          type: string
+          enum: [automatic, manual]
+          nullable: true
+    EnrollmentUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, completed, cancelled, waiting]
+        final_grade:
+          type: number
+          nullable: true
+        progress_percent:
+          type: integer
+          nullable: true
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        course_module_id:
+          type: integer
+        title:
+          type: string
+        content_type:
+          type: string
+        content_url:
+          type: string
+          nullable: true
+        duration_minutes:
+          type: integer
+          nullable: true
+    LessonRequest:
+      type: object
+      required: [course_module_id, title, content_type]
+      properties:
+        course_module_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        content_type:
+          type: string
+          enum: [youtube, vimeo, mp4, pdf, docx, pptx, external_link]
+        content_url:
+          type: string
+          nullable: true
+        file_path:
+          type: string
+          nullable: true
+        duration_minutes:
+          type: integer
+          nullable: true
+        position:
+          type: integer
+          nullable: true
+        is_required:
+          type: boolean
+          nullable: true
+        is_available:
+          type: boolean
+          nullable: true
+    LessonProgressRequest:
+      type: object
+      required: [watched_seconds, progress_percent]
+      properties:
+        watched_seconds:
+          type: integer
+          minimum: 0
+        progress_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+    Exam:
+      type: object
+      properties:
+        id:
+          type: integer
+        course_id:
+          type: integer
+        course_module_id:
+          type: integer
+          nullable: true
+        title:
+          type: string
+        minimum_grade:
+          type: number
+          nullable: true
+        correction_type:
+          type: string
+          enum: [automatic, manual]
+        is_active:
+          type: boolean
+    ExamRequest:
+      type: object
+      required: [course_id, title]
+      properties:
+        course_id:
+          type: integer
+        course_module_id:
+          type: integer
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        minimum_grade:
+          type: number
+          nullable: true
+        time_limit_minutes:
+          type: integer
+          nullable: true
+        max_attempts:
+          type: integer
+          nullable: true
+        opens_at:
+          type: string
+          format: date-time
+          nullable: true
+        closes_at:
+          type: string
+          format: date-time
+          nullable: true
+        correction_type:
+          type: string
+          enum: [automatic, manual]
+          nullable: true
+        is_active:
+          type: boolean
+          nullable: true
+    ExamSubmitRequest:
+      type: object
+      required: [answers]
+      properties:
+        answers:
+          type: array
+          items:
+            type: object
+            required: [question_id]
+            properties:
+              question_id:
+                type: integer
+              question_option_id:
+                type: integer
+                nullable: true
+              answer_text:
+                type: string
+                nullable: true
+    ExamGradeRequest:
+      type: object
+      required: [answers]
+      properties:
+        answers:
+          type: array
+          items:
+            type: object
+            required: [id, score]
+            properties:
+              id:
+                type: integer
+              score:
+                type: number
+              feedback:
+                type: string
+                nullable: true
+    ExamAttempt:
+      type: object
+      properties:
+        id:
+          type: integer
+        exam_id:
+          type: integer
+        user_id:
+          type: integer
+        attempt_number:
+          type: integer
+        grade:
+          type: number
+          nullable: true
+        status:
+          type: string
+    Setting:
+      type: object
+      properties:
+        id:
+          type: integer
+        key:
+          type: string
+        value:
+          type: object
+          nullable: true
+        group:
+          type: string
+          nullable: true
+    SettingRequest:
+      type: object
+      required: [key]
+      properties:
+        key:
+          type: string
+        value:
+          type: object
+          nullable: true
+        group:
+          type: string
+          nullable: true
+    SettingUpdateRequest:
+      type: object
+      properties:
+        value:
+          type: object
+          nullable: true
+        group:
+          type: string
+          nullable: true
+    PaginationLinks:
+      type: object
+    PaginatedCourses:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Course"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          type: object
+    PaginatedEnrollments:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Enrollment"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          type: object
+    PaginatedLessons:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Lesson"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          type: object
+    PaginatedExams:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Exam"
+        links:
+          $ref: "#/components/schemas/PaginationLinks"
+        meta:
+          type: object
